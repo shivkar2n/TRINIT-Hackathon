@@ -2,8 +2,12 @@ const prim = require("@prisma/client");
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
+const bcrypt = require("bcrypt");
+
 const prisma = new prim.PrismaClient();
 const app = express();
+const saltRounds = 10;
+const salt = bcrypt.genSaltSync(saltRounds);
 
 // {{{ MIDDLEWARE
 app.use((req, res, next) => {
@@ -26,14 +30,36 @@ app.use(cors({ origin: "*" }));
 app.post("/api/register", async (req, res) => {
   try {
     const frontData = req.body;
+    const password = bcrypt.hashSync(frontData.password, salt);
+
+    // Store hash in your password DB.
     const user = await prisma.user.create({
       data: {
         username: frontData.username,
         email: frontData.email,
-        password: frontData.password,
+        password: password,
       },
     });
     res.status(200).send({ message: "Register Successful!" });
+  } catch (err) {
+    console.log(err);
+    res.status(500).send({ message: err });
+  }
+});
+//}}}
+
+//{{{CREATE PROJECTS
+app.post("/api/createProject", async (req, res) => {
+  try {
+    const frontData = req.body;
+    const project = await prisma.project.create({
+      data: {
+        name: frontData.name,
+        teamId: frontData.teamId,
+      },
+    });
+    console.log(project);
+    res.status(200).send({ message: "Project successfully created!" });
   } catch (err) {
     console.log(err);
     res.status(500).send({ message: err });
@@ -56,6 +82,27 @@ app.get("/api/listProjects", async (req, res) => {
 });
 //}}}
 
+//{{{REASSIGN BUGS
+app.post("/api/assignBugs/:id", async (req, res) => {
+  try {
+    const frontData = req.body;
+    const bug = await prisma.bug.update({
+      where: {
+        id: parseInt(req.params.id),
+      },
+      data: {
+        handlerId: frontData.handlerId,
+      },
+    });
+    console.log(bug);
+    res.status(200).send({ message: "Bug reassigned!" });
+  } catch (err) {
+    console.log(err);
+    res.status(500).send({ message: err });
+  }
+});
+//}}}
+
 //{{{CREATE BUGS
 app.post("/api/createBugs/:id", async (req, res) => {
   try {
@@ -71,7 +118,7 @@ app.post("/api/createBugs/:id", async (req, res) => {
       },
     });
     console.log(bug);
-    res.status(200).send({ message: "Comments successfully created!" });
+    res.status(200).send({ message: "Bug successfully created!" });
   } catch (err) {
     console.log(err);
     res.status(500).send({ message: err });

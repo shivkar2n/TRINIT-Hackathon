@@ -8,21 +8,21 @@ VALUES ('Macroware');
 
 INSERT INTO "main"."User"
 ("username", "email", "password")
-VALUES ('Gunal', '123@gmail.com', 'password');
+VALUES ('Gunal', '123@gmail.com', '$2b$10$zkJaARqraV1Q3bm3bDrnbuoRGnDz2SbFkseuU5d.ctYhrQfbJuRFW');
 
 
 INSERT INTO "main"."User"
 ("username", "email", "password")
-VALUES ('Praveen', '456@gmail.com', 'password');
+VALUES ('Praveen', '456@gmail.com', '$2b$10$zkJaARqraV1Q3bm3bDrnbuoRGnDz2SbFkseuU5d.ctYhrQfbJuRFW');
 
 
 INSERT INTO "main"."User"
 ("username", "email", "password")
-VALUES ('Shankar', '789@gmail.com', 'password');
+VALUES ('Shankar', '789@gmail.com', '$2b$10$zkJaARqraV1Q3bm3bDrnbuoRGnDz2SbFkseuU5d.ctYhrQfbJuRFW');
 
 INSERT INTO "main"."User"
 ("username", "email", "password")
-VALUES ('Tharun', '139@gmail.com', 'password');
+VALUES ('Tharun', '139@gmail.com', '$2b$10$zkJaARqraV1Q3bm3bDrnbuoRGnDz2SbFkseuU5d.ctYhrQfbJuRFW');
 
 INSERT INTO "main"."Employee"
 ("isLeader", "userId", "teamId")

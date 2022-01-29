@@ -4,6 +4,7 @@ const path = require("path");
 const bodyParser = require("body-parser");
 const sessions = require("express-session");
 const cookieParser = require("cookie-parser");
+const bcrypt = require("bcrypt");
 const ejs = require("ejs");
 
 const prisma = new prim.PrismaClient();
@@ -72,7 +73,7 @@ app.all("/login", async (req, res) => {
       });
 
       if (user != null) {
-        if (user.password != frontData.password) {
+        if (!bcrypt.compareSync(frontData.password, user.password)) {
           return res.status(404).send({ message: "Incorrect email/password" });
         }
       } else {
@@ -89,7 +90,9 @@ app.all("/login", async (req, res) => {
 
       session = req.session;
       session.userid = frontData.email;
-      session.eid = employee.id;
+      if (employee != null) {
+        session.eid = employee.id;
+      }
 
       return res.status(200).send({ message: "Success" });
       //return res.status(200).redirect("/");
@@ -104,11 +107,11 @@ app.all("/login", async (req, res) => {
 //}}}
 
 //{{{LOGOUT
-app.get("/logout", (req, res) => {
+app.get("/logout", auth, (req, res) => {
   try {
     req.session.destroy();
     console.log(req.session);
-    return res.status(200).redirect("/login");
+    return res.status(200).send({ message: "Successfully Logged out!" });
   } catch (err) {
     console.log(err);
     return res.status(500).send({ message: "Logout Error!" });
@@ -126,6 +129,19 @@ app.get("/register", (req, res) => {
     return res
       .status(200)
       .sendFile(path.join(__dirname, "/pages/register.html"));
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send({ message: err });
+  }
+});
+//}}}
+
+//{{{DASHBOARD PAGE
+app.get("/dashboard", auth, (req, res) => {
+  try {
+    return res
+      .status(200)
+      .sendFile(path.join(__dirname, "/pages/dashboard.html"));
   } catch (err) {
     console.log(err);
     return res.status(500).send({ message: err });
