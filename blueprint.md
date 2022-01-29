@@ -44,6 +44,10 @@
 - Leader can add employees
 
 # Dashboard page
+- Project name, description, members, noOfPendingbugs
+- On project click shows all bugs related to project
+- Bug desc
+
 - User/Employee can view projects
 - Team leader can view/add projects
 - Stats graph of bugs data for a given project
