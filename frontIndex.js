@@ -5,12 +5,13 @@ const bodyParser = require("body-parser");
 const sessions = require("express-session");
 const cookieParser = require("cookie-parser");
 const bcrypt = require("bcrypt");
-const ejs = require("ejs");
 
 const prisma = new prim.PrismaClient();
 const app = express();
 
 const oneDay = 1000 * 60 * 60 * 24;
+const saltRounds = 10;
+const salt = bcrypt.genSaltSync(saltRounds);
 
 // {{{MIDDLEWARE
 auth = (req, res, next) => {
@@ -51,7 +52,7 @@ app.use((req, res, next) => {
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "pages")));
-app.set("view engine", "ejs");
+app.set("view engine", "hbs");
 // }}}
 
 //{{{LOGIN PAGE
@@ -98,7 +99,7 @@ app.all("/login", async (req, res) => {
       //return res.status(200).redirect("/");
     }
 
-    return res.status(200).sendFile(path.join(__dirname, "/pages/login.html"));
+    return res.status(200).sendFile(path.join(__dirname, "/pages/signin.html"));
   } catch (err) {
     console.log(err);
     return res.status(500).send({ message: err });
@@ -120,11 +121,30 @@ app.get("/logout", auth, (req, res) => {
 //}}}
 
 //{{{REGISTER PAGE
-app.get("/register", (req, res) => {
+app.all("/register", async (req, res) => {
   try {
     if (req.session.userid) {
       return res.status(200).send({ message: "Already logged in" });
       //return res.redirect("/");
+    }
+
+    if (req.method == "POST") {
+      const frontData = req.body;
+
+      if (frontData.password != frontData.confirm_password) {
+        return res.status(200).send({ message: "Passwords don't match!" });
+      }
+      const password = bcrypt.hashSync(frontData.password, salt);
+
+      const user = await prisma.user.create({
+        data: {
+          username: frontData.username,
+          email: frontData.email,
+          password: password,
+        },
+      });
+
+      res.status(200).send({ message: "Register Successful!" });
     }
     return res
       .status(200)
