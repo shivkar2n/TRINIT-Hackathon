@@ -1,5 +1,5 @@
 node_modules
 prisma/data.db
 prisma/migrations
-
+.env
 

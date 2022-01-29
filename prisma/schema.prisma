@@ -8,37 +8,61 @@ generator client {
 }
 
 model User {
-  id         Int       @id @default(autoincrement())
-  username   String    @unique
-  password   String
-  employee   Employee?
-  employeeId Int
-  comments   Comment[]
+  id       Int       @id @default(autoincrement())
+  username String    @unique
+  email    String    @unique
+  password String
+  employee Employee?
+  comments Comment[]
+}
+
+model Project {
+  id     Int    @id @default(autoincrement())
+  name   String
+  team   Team   @relation(fields: [teamId], references: [id])
+  teamId Int
+  bugs   Bug[]
+
+}
+
+model Team {
+  id       Int        @id @default(autoincrement())
+  name     String
+  members  Employee[]
+  projects Project[]
 }
 
 model Employee {
   id       Int     @id @default(autoincrement())
   isLeader Boolean
-  role     Bug?
+  role     Bug[]
   user     User    @relation(fields: [userId], references: [id])
   userId   Int     @unique
+  team     Team    @relation(fields: [teamId], references: [id])
+  teamId   Int
 }
 
 model Comment {
-  id          Int  @id @default(autoincrement())
-  commenter   User @relation(fields: [commenterId], references: [id])
+  id          Int      @id @default(autoincrement())
+  body        String
+  date        DateTime @default(now())
+  commenter   User     @relation(fields: [commenterId], references: [id])
   commenterId Int
-  bug         Bug  @relation(fields: [bugId], references: [id])
+  bug         Bug      @relation(fields: [bugId], references: [id])
   bugId       Int
 }
 
 model Bug {
   id          Int       @id @default(autoincrement())
-  raised      Boolean
-  resolved    Boolean
+  description String
+  raisedBy    String
+  created     DateTime @default(now())
+  resolved    Boolean @default(false)
   threatLevel Int
   deadline    DateTime
-  handler     Employee  @relation(fields: [handlerId], references: [id])
-  handlerId   Int       @unique
+  handler     Employee? @relation(fields: [handlerId], references: [id])
+  handlerId   Int?
+  project     Project?   @relation(fields: [projectId], references: [id])
+  projectId   Int?
   comments    Comment[]
 }

@@ -1,0 +1,57 @@
+INSERT INTO "main"."Team"
+("name")
+VALUES ('Microware');
+
+INSERT INTO "main"."Team"
+("name")
+VALUES ('Macroware');
+
+INSERT INTO "main"."User"
+("username", "email", "password")
+VALUES ('Gunal', '123@gmail.com', 'password');
+
+
+INSERT INTO "main"."User"
+("username", "email", "password")
+VALUES ('Praveen', '456@gmail.com', 'password');
+
+
+INSERT INTO "main"."User"
+("username", "email", "password")
+VALUES ('Shankar', '789@gmail.com', 'password');
+
+INSERT INTO "main"."User"
+("username", "email", "password")
+VALUES ('Tharun', '139@gmail.com', 'password');
+
+INSERT INTO "main"."Employee"
+("isLeader", "userId", "teamId")
+VALUES (0, 1, 1);
+
+INSERT INTO "main"."Employee"
+("isLeader", "userId", "teamId")
+VALUES (0, 2, 1);
+
+INSERT INTO "main"."Employee"
+("isLeader", "userId", "teamId")
+VALUES (1, 3, 1);
+
+INSERT INTO "main"."Project"
+("name", "teamId")
+VALUES ('GitUI', 1);
+
+INSERT INTO "main"."Bug"
+("description", "raisedBy","resolved", "threatLevel", "deadline", "projectId")
+VALUES ('Modal not working', "Praveen", 0, 2, '1972-01-01T00:00:00.000Z', 1);
+
+INSERT INTO "main"."Bug"
+("description", "raisedBy" ,"resolved", "threatLevel", "deadline", "projectId")
+VALUES ('Crash', "Gunal", 0, 2, '1974-01-01T00:00:00.000Z', 1);
+
+INSERT INTO "main"."Comment"
+("body", "commenterId", "bugId")
+VALUES ('Please fix this', 4, 1);
+
+INSERT INTO "main"."Comment"
+("body", "commenterId", "bugId")
+VALUES ('We are trying', 2, 1);
