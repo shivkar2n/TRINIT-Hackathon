@@ -1,0 +1,44 @@
+datasource db {
+  url      = env("DATABASE_URL")
+  provider = "sqlite"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id         Int       @id @default(autoincrement())
+  username   String    @unique
+  password   String
+  employee   Employee?
+  employeeId Int
+  comments   Comment[]
+}
+
+model Employee {
+  id       Int     @id @default(autoincrement())
+  isLeader Boolean
+  role     Bug?
+  user     User    @relation(fields: [userId], references: [id])
+  userId   Int     @unique
+}
+
+model Comment {
+  id          Int  @id @default(autoincrement())
+  commenter   User @relation(fields: [commenterId], references: [id])
+  commenterId Int
+  bug         Bug  @relation(fields: [bugId], references: [id])
+  bugId       Int
+}
+
+model Bug {
+  id          Int       @id @default(autoincrement())
+  raised      Boolean
+  resolved    Boolean
+  threatLevel Int
+  deadline    DateTime
+  handler     Employee  @relation(fields: [handlerId], references: [id])
+  handlerId   Int       @unique
+  comments    Comment[]
+}
