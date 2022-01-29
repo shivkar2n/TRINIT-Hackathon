@@ -1,5 +1,5 @@
-# HostelManagement
-A management website to allow students to apply requests for rooms.
+# Bug Issue management system
+A basic bug tracking system
 
 ## Technologies used:
 1. sqlite and prisma
