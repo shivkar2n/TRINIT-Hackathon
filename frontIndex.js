@@ -298,24 +298,23 @@ app.all("/createBugs/:id", async (req, res) => {
   try {
     if (req.method == "POST") {
       const frontData = req.body;
-
       console.log(frontData);
+      var deadline = new Date(frontData.deadline);
       const bug = await prisma.bug.create({
         data: {
-          raisedBy: "admin",
+          raisedBy: frontData.reportedBy,
           description: frontData.desc,
           threatLevel: parseInt(frontData.level[0]),
-          deadline: frontData.deadline,
+          deadline: deadline,
           resolved: frontData.resolved,
           projectId: parseInt(req.params.id),
         },
       });
       console.log(bug);
-      res.status(200).send({ message: "Bug successfully created!" });
+      res.status(200).redirect("/");
     }
-    return res.render("createBug");
+    return res.render("createBug", { id: parseInt(req.params.id) });
   } catch (err) {
-    console.log(err);
     res.status(500).send({ message: err });
   }
 });

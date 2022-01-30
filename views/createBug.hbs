@@ -105,18 +105,26 @@
             <a href="#" class="nav-link h3 text-white my-2">
                 Dashboard
             </a>
-            <li href="#" class="nav-link">
+            <a href="/" class="nav-link">
                 <i class="bx bxs-dashboard"></i>
                 <span class="mx-2">Home</span>
-            </li>
-            <li href="#" class="nav-link">
-                <i class="bx bx-user-check"></i>
-                <span class="mx-2">Profile</span>
-            </li>
-            <li href="#" class="nav-link">
-                <i class="bx bx-conversation"></i>
-                <span class="mx-2">Contact</span>
-            </li>
+            </a>
+        <a href="#" class="nav-link">
+          <i class="bx bx-user-check"></i>
+          <span class="mx-2">Profile</span>
+        </a>
+        <a href="#" class="nav-link">
+          <i class="bx bx-conversation"></i>
+          <span class="mx-2">Contact</span>
+        </a>
+        <a href="/createProject" class="nav-link">
+          <i class="bx bx-conversation"></i>
+          <span class="mx-2">Create</span>
+        </a>
+        <a href="/logout" class="nav-link">
+          <i class="bx bx-conversation"></i>
+          <span class="mx-2">Logout</span>
+        </a>
         </ul>
 
         <span href="#" class="nav-link h4 w-100 mb-5">
@@ -134,7 +142,7 @@
         </nav>
         <!--End Top Nav -->
 
-        <form class="form-horizontal" action="/createBugs" method="POST">
+		<form class="form-horizontal" action={{createBug id}} method="POST">
             <fieldset>
 
                 <!-- Form Name -->
@@ -156,13 +164,21 @@
 
                 <!-- Text input-->
                 <div class="form-group" style="margin: 2px ;">
-                    <label class="col-md-4 control-label" for="product_name" style="color:white; padding:4px">DEADLINE</label>
+                    <label class="col-md-4 control-label" for="product_name" style="color:white; padding:4px">REPORTED BY</label>
                     <div class="col-md-4">
-                        <input id="deadline" name="deadline" placeholder="BUGS PENDING"
-                            class="form-control input-md" required="" type="datetime-local">
+                        <input id="deadline" name="reportedBy" placeholder="Reported By"
+                            class="form-control input-md" required="" type="text">
                     </div>
                 </div>
 
+                <!-- Text input-->
+                <div class="form-group" style="margin: 2px ;">
+                    <label class="col-md-4 control-label" for="product_name" style="color:white; padding:4px">DEADLINE</label>
+                    <div class="col-md-4">
+                        <input id="deadline" name="deadline" placeholder="NAME"
+                            class="form-control input-md" required="" type="date">
+                    </div>
+                </div>
 
                 <!-- Text input-->
                 <div class="form-group" style="margin: 2px ;">
