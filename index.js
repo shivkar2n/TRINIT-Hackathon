@@ -6,8 +6,6 @@ const bcrypt = require("bcrypt");
 
 const prisma = new prim.PrismaClient();
 const app = express();
-const saltRounds = 10;
-const salt = bcrypt.genSaltSync(saltRounds);
 
 // {{{ MIDDLEWARE
 app.use((req, res, next) => {
@@ -25,28 +23,6 @@ app.use(
 app.use(bodyParser.json());
 app.use(cors({ origin: "*" }));
 // }}}
-
-//{{{REGISTER
-app.post("/api/register", async (req, res) => {
-  try {
-    const frontData = req.body;
-    const password = bcrypt.hashSync(frontData.password, salt);
-
-    // Store hash in your password DB.
-    const user = await prisma.user.create({
-      data: {
-        username: frontData.username,
-        email: frontData.email,
-        password: password,
-      },
-    });
-    res.status(200).send({ message: "Register Successful!" });
-  } catch (err) {
-    console.log(err);
-    res.status(500).send({ message: err });
-  }
-});
-//}}}
 
 //{{{CREATE PROJECTS
 app.post("/api/createProject", async (req, res) => {
@@ -71,7 +47,6 @@ app.post("/api/createProject", async (req, res) => {
 app.get("/api/listProjects", async (req, res) => {
   try {
     const projects = await prisma.project.findMany();
-    console.log(projects);
     res
       .status(200)
       .send({ data: projects, message: "Projects list request successful!" });
@@ -129,6 +104,7 @@ app.post("/api/createBugs/:id", async (req, res) => {
 //{{{VIEW BUGS
 app.get("/api/listBugs/:id", async (req, res) => {
   try {
+    console.log(req.session);
     const bugs = await prisma.bug.findMany({
       where: {
         projectId: parseInt(req.params.id),

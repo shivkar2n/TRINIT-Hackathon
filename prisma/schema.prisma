@@ -17,17 +17,18 @@ model User {
 }
 
 model Project {
-  id     Int    @id @default(autoincrement())
-  name   String
-  team   Team   @relation(fields: [teamId], references: [id])
-  teamId Int
-  bugs   Bug[]
+  id          Int    @id @default(autoincrement())
+  name        String @unique
+  description String
+  team        Team   @relation(fields: [teamId], references: [id])
+  teamId      Int
+  bugs        Bug[]
 
 }
 
 model Team {
   id       Int        @id @default(autoincrement())
-  name     String
+  name     String     @unique
   members  Employee[]
   projects Project[]
 }
@@ -56,13 +57,13 @@ model Bug {
   id          Int       @id @default(autoincrement())
   description String
   raisedBy    String
-  created     DateTime @default(now())
-  resolved    Boolean @default(false)
+  created     DateTime  @default(now())
+  resolved    Boolean   @default(false)
   threatLevel Int
   deadline    DateTime
   handler     Employee? @relation(fields: [handlerId], references: [id])
   handlerId   Int?
-  project     Project?   @relation(fields: [projectId], references: [id])
+  project     Project?  @relation(fields: [projectId], references: [id])
   projectId   Int?
   comments    Comment[]
 }
