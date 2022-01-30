@@ -25,6 +25,6 @@ To-Do:
 •	Addition of assigning roles
 •	Addition of Graphs
 •	Addition of Download option in format of pdf
-
+     Addition of Custom Background
 
 
