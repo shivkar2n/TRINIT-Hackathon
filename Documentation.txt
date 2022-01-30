@@ -1,4 +1,4 @@
-Documentation
+## Documentation
 
 Technologies Used:
 
@@ -10,7 +10,7 @@ Technologies Used:
 •	Bootstrap
 •	Handlebars
      
-           Features:
+Features:
 
 •	User can sign in and sign up
 •	The Dashboard shows all the information about the Project ongoing with number of pending bugs in it(Editable)
@@ -27,4 +27,6 @@ To-Do:
 •	Addition of Download option in format of pdf
      Addition of Custom Background
 
+Conclusion:
 
+Basic Bug Tracking System achieved with feature of adding projects,bugs,signin,signup pages  
