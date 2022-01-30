@@ -6,6 +6,7 @@ const sessions = require("express-session");
 const cookieParser = require("cookie-parser");
 const bcrypt = require("bcrypt");
 const hbs = require("hbs");
+
 const prisma = new prim.PrismaClient();
 const app = express();
 
@@ -14,14 +15,20 @@ const saltRounds = 10;
 const salt = bcrypt.genSaltSync(saltRounds);
 
 // {{{MIDDLEWARE
-hbs.registerHelper("bugLink", (aString) => {
+hbs.registerHelper("viewBug", (aString) => {
   return "/dashboard/" + aString;
+});
+
+hbs.registerHelper("createBug", (aString) => {
+  return "/createBugs/" + aString;
 });
 
 const auth = (req, res, next) => {
   try {
     if (!req.session.userid) {
-      res.status(403).send({ message: "Not logged in!" });
+      return res
+        .status(403)
+        .render("error", { message: "Not logged in!", redirectPage: "login" });
     } else {
       next();
     }
@@ -87,9 +94,7 @@ app.set("view engine", "hbs");
 app.all("/login", async (req, res) => {
   try {
     if (req.session.userid) {
-      //return res.redirect("/");
-      console.log(req.session);
-      return res.status(200).send({ message: "Already logged in" });
+      return res.redirect("/");
     }
 
     if (req.method == "POST") {
@@ -103,10 +108,14 @@ app.all("/login", async (req, res) => {
 
       if (user != null) {
         if (!bcrypt.compareSync(frontData.password, user.password)) {
-          return res.status(404).send({ message: "Incorrect email/password" });
+          return res
+            .status(404)
+            .render("error", { message: "Incorrect email/password" });
         }
       } else {
-        return res.status(404).send({ message: "Incorrect email/password" });
+        return res
+          .status(404)
+          .render("error", { message: "Incorrect email/password" });
       }
 
       const employee = await prisma.employee.findFirst({
@@ -124,8 +133,7 @@ app.all("/login", async (req, res) => {
         session.isLeader = employee.isLeader;
       }
 
-      return res.status(200).send({ message: "Success" });
-      //return res.status(200).redirect("/");
+      return res.status(200).redirect("/");
     }
 
     return res.render("signin");
@@ -140,8 +148,7 @@ app.all("/login", async (req, res) => {
 app.get("/logout", auth, (req, res) => {
   try {
     req.session.destroy();
-    console.log(req.session);
-    return res.status(200).send({ message: "Successfully Logged out!" });
+    return res.status(200).redirect("/login");
   } catch (err) {
     console.log(err);
     return res.status(500).send({ message: "Logout Error!" });
@@ -153,8 +160,7 @@ app.get("/logout", auth, (req, res) => {
 app.all("/register", async (req, res) => {
   try {
     if (req.session.userid) {
-      return res.status(200).send({ message: "Already logged in" });
-      //return res.redirect("/");
+      return res.redirect("/");
     }
 
     if (req.method == "POST") {
@@ -184,8 +190,7 @@ app.all("/register", async (req, res) => {
 //}}}
 
 //{{{VIEW PROJECTS PAGE
-//app.get("/dashboard", auth, (req, res) => {
-app.get("/projects", async (req, res) => {
+app.get("/", auth, async (req, res) => {
   try {
     console.log(req.session);
     const projects = await prisma.project.findMany({
@@ -213,8 +218,7 @@ app.get("/projects", async (req, res) => {
 //}}}
 
 //{{{DASHBOARD PAGE
-//app.get("/dashboard", auth, (req, res) => {
-app.get("/dashboard/:id", async (req, res) => {
+app.get("/dashboard/:id", auth, async (req, res) => {
   try {
     console.log(req.session);
     var bugs = await prisma.bug.findMany({
@@ -239,7 +243,7 @@ app.get("/dashboard/:id", async (req, res) => {
 //}}}
 
 //{{{CREATE PROJECTS PAGE
-app.all("/createProject", async (req, res) => {
+app.all("/createProject", auth, async (req, res) => {
   try {
     if (req.method == "POST") {
       const frontData = req.body;
@@ -290,7 +294,7 @@ app.all("/createProject", async (req, res) => {
 //}}}
 
 //{{{CREATE BUGS PAGE
-app.all("/createBugs", async (req, res) => {
+app.all("/createBugs/:id", async (req, res) => {
   try {
     if (req.method == "POST") {
       const frontData = req.body;
