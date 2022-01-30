@@ -23,12 +23,16 @@ hbs.registerHelper("createBug", (aString) => {
   return "/createBugs/" + aString;
 });
 
+hbs.registerHelper("updateBug", (aString) => {
+  return "/api/updateBugs/" + aString;
+});
+
 const auth = (req, res, next) => {
   try {
     if (!req.session.userid) {
       return res
         .status(403)
-        .render("error", { message: "Not logged in!", redirectPage: "login" });
+        .render("error", { message: "Not logged in!", redirectPage: "/login" });
     } else {
       next();
     }
@@ -243,47 +247,27 @@ app.get("/dashboard/:id", auth, async (req, res) => {
 //}}}
 
 //{{{CREATE PROJECTS PAGE
-app.all("/createProject", auth, async (req, res) => {
+//app.all("/createProject", auth, async (req, res) => {
+app.all("/createProject", async (req, res) => {
   try {
     if (req.method == "POST") {
       const frontData = req.body;
       console.log(req.session);
-
-      const team = await prisma.team.create({
-        data: {
-          name: frontData.projectName,
-          members: {
-            update: {
-              name: frontData.members[0],
-            },
-          },
+      const employee = await prisma.employee.findFirst({
+        where: {
+          id: req.session.eid,
         },
       });
-      console.log(team);
-      //var members = [];
 
-      //for (let i in frontData.members) {
-      //  for (let j in user) {
-      //    if (
-      //      frontData.members[i] === user[j].username &&
-      //      user[j].employee != null
-      //    ) {
-      //      members.push(user[j].employee);
-      //    }
-      //  }
-      //}
-      //console.log(members);
-      //const teamId = 1;
-      //const project = await prisma.project.create({
-      //  data: {
-      //    name: frontData.projectName,
-      //    description: frontData.desc,
-      //    teamId: teamId,
-      //  },
-      //});
-      //  const team =
+      const project = await prisma.project.create({
+        data: {
+          name: frontData.projectName,
+          description: frontData.desc,
+          teamId: employee.teamId,
+        },
+      });
       console.log(project);
-      res.status(200).send({ message: "Project successfully created!" });
+      res.status(200).redirect("/");
     }
     return res.render("createProject");
   } catch (err) {
@@ -316,6 +300,25 @@ app.all("/createBugs/:id", async (req, res) => {
     return res.render("createBug", { id: parseInt(req.params.id) });
   } catch (err) {
     res.status(500).send({ message: err });
+  }
+});
+//}}}
+
+//{{{CHANGE BUG STATUS
+app.get("/api/updateBugs/:id", async (req, res) => {
+  try {
+    const bug = await prisma.bug.update({
+      where: {
+        id: parseInt(req.params.id),
+      },
+      data: {
+        resolved: true,
+      },
+    });
+    return res.status(200).redirect("/");
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send({ message: err });
   }
 });
 //}}}

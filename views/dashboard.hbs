@@ -172,8 +172,11 @@
               <td>{{ this.created }}</td>
               <td>{{ this.threatLevel }}</td>
               <td>{{ this.handler.user.username }}</td>
+              <td>{{ this.id }}</td>
               <td>
-                <a href="" style="padding-left: 5px">Edit</a>
+                <form action="{{updateBug" this.id}} method="GET">
+                  <button type="submit" class="btn btn-success">Close</button>
+                </form>
               </td>
             </tr>
             {{/each}}

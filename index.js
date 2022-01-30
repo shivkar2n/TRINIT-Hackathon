@@ -70,10 +70,10 @@ app.post("/api/assignBugs/:id", async (req, res) => {
       },
     });
     console.log(bug);
-    res.status(200).send({ message: "Bug reassigned!" });
+    return res.status(200).redirect("/");
   } catch (err) {
     console.log(err);
-    res.status(500).send({ message: err });
+    return res.status(500).send({ message: err });
   }
 });
 //}}}
@@ -93,7 +93,7 @@ app.post("/api/createBugs/:id", async (req, res) => {
       },
     });
     console.log(bug);
-    res.status(200).send({ message: "Bug successfully created!" });
+    res.status(200).redirect();
   } catch (err) {
     console.log(err);
     res.status(500).send({ message: err });
