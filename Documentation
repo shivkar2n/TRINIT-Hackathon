@@ -1,0 +1,30 @@
+Documentation
+
+Technologies Used:
+
+•	 HTML
+•	CSS
+•	Javascript
+•	SQLite
+•	Prisma
+•	Bootstrap
+•	Handlebars
+     
+           Features:
+
+•	User can sign in and sign up
+•	The Dashboard shows all the information about the Project ongoing with number of pending bugs in it(Editable)
+•	Sortable and Searching feature to sort all the information
+•	User can view bug related to that project editable
+•	User can create a project with necessary details
+•	User can create bug for a particular project
+
+To-Do:
+
+•	Addition of Chat Feature
+•	Addition of assigning roles
+•	Addition of Graphs
+•	Addition of Download option in format of pdf
+
+
+
